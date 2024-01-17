@@ -1,0 +1,99 @@
+# Sección 3: Un poco más allá de los fundamentos de GIT
+
+## Introducción a la sección
+
+## Cambios en los archivos
+
+ver las diferencias al modificar archivos
+
+-   `git diff`: antes de añadirlo al stage
+-   `git diff --staged`: después de añadirlo al stage
+
+**desde el source control (de vs code) puedes ver lo mismo pero de una mejor manera**
+
+## Actualizar mensaje del commit y revertir commits
+
+**procura realizar cambios en el ultimo commit y no irte a commits anteriores y realizarlos ahi**
+
+hay 2 formas de cambiar el nombre: el 1ero recomendado, y el 2do no tan recomendado pero que también hace lo mismo que revertir los cambios
+
+actualizar mensaje del ultimo commit
+
+-   `git commit --amend -m "mensaje"`: asi lo actualizas al instante
+-   `git commit --amend"`: asi entras al modo editor para poder modificar el mensaje de commit...
+
+**revertir commit**: hacer que mis modificaciones del commit actual por ejemplo sean parte del commit anterior (volver a un commit atrás... lo cual eliminaria mi commit actual)
+
+-   `git reset --soft HEAD^`: el soft es para que los cambios no sean destructivos, es decir, **PARA QUE SE MANTENGAN LOS CAMBIOS**. el HEAD^ apunta al commit antes del head (head es el commit actual)... el ^2 apuntaria al penultimo... y asi sucesivamente. ESTO TE LLEVA AL PENULTIMO COMMIT BORRANDO EL ULTIMO COMMIT (**SIN QUE LOS CAMBIOS QUE REALIZASTE SE BORREN**). A PARTIR DE AQUI YA REALIZARÍAS tu --amend
+    <!-- ! en vez del HEAD tmb puedes reemplazarlo por el HASH de un commit. -->
+
+**EN TODOS: si no le pones HEAD o un HASH entonces aplica para el ACTUAL (el commit en el que estas)**
+
+<!-- en el caso de hard: si haces lo de la linea de arribita, es un poco diferente al checkout en una sola cosita: el hard cambia el staging area y el directorio (vuelven TODOS los cambios), mientras que el checkout solo cambia el directorio, manteniendo el staging area (aquellos cambios que estan en estado de staged y unstrack no los vuelve), cambiando aquellos que estan en no staged -->
+
+## Posible error/warning que tienen algunos
+
+## Preparando un repositorio para viajes en el tiempo
+
+## Viajes en el tiempo, resets y reflog
+
+<!-- ! generalmente no se hace esto... lo que se hace o se recomienda es que si implementaras una nueva funcionalidad entonces creas una nueva rama y trabajas en ella, al final ya luego lo unes. de esa manera no trabajas con los cambios en el tiempo con el que tus compañeros también podrían estar trabajando. por ello el main o master debe tener los cambios definitivos -->
+
+<!-- * EN VES DEL HASH PON el hash de tu commit... o HEAD^ -->
+
+-   `git reset --soft HASH`: deshace commits en el historial, **manteniendo todos los cambios de esos commits en el índice (stage)** para poder modificarlos o recomitearlos si es necesario.
+<!-- ! git reset HEAD^ -> usa por defecto el mixed -->
+-   `git reset --mixed HASH`: deshace commits y al mismo tiempo **quita los cambios de esos commits del índice (stage), pero los mantiene en el directorio de trabajo** para revisión o re-commit (dichos cambios aparecen como unstaged).
+-   `git reset --hard HASH`: **descarta por completo todos los cambios realizados desde el commit especificado, tanto en el índice (stage) como en el directorio de trabajo**. es decir, te lleva a la copia o commit que hiciste en dicho hash, manteniendo aquellos que agregaste, y borrando o descartando todos los demas (del directorio de trabajo).
+<!-- es destructivo, es decir, dejará todo el repositorio tal y como ESTABA EN DICHO PUNTO O COMMIT -->
+
+mostrando el historial de referencias
+
+-   `git reflog`: muestra el historial de los cambios en las referencias locales del repositorio (commits, resets, merges, etc). (en el historial el primero es el mas actual)
+    <!-- una referencia es un puntero a un commit: ramas o head -->
+    <!-- ! *esto es util para volver a algun punto que hayas eliminado pero que igual aparece en el historial y al que puedes volver con `git reset --hard deeb3ba` -->
+
+## Cambiar el nombre y eliminar archivos mediante de git
+
+cambiar nombre
+
+-   `git mv destruir-mundo.md salvar-mundo.md`: manda al stage la accion de renombrar (y lo hace visual en tu vs code)
+    <!-- mv: move
+    mv porque se utiliza adicionalmente para mover arcivos entre directorios -->
+    <!-- R: rename -->
+
+remover archivo
+
+-   `git rm salvar-mundo.md`: manda al stage la accion de remover (y lo hace visual en tu vs code)
+
+remover carpeta y su contenido
+
+-   `git rm -r directorio`: manda al stage la accion de remover (y lo hace visual en tu vs code)
+<!-- r significa recursivo (que no solo aplica a un solo elemento, sino también a todos los contenidos dentro de el): es decir, que elimine carpeta y todo lo que contiene  -->
+
+## Cambiar el nombre y eliminar archivos fuera de git
+
+<!-- ! no se recomienda este metodo porque los archivos crecen y se cambian continuamente... por lo que, al hacer este metodo (que implicitamente borra el archivo original y lo cambia por uno nuevo renombrado) puedes perder/pierdes todo el historial de cambios que hiciste en dicho archivo, lo cual es importante mantenerlo. por ello es mas recomendable que lo hagas mediante los comandos de git -->
+
+**1. puedes renombrar los archivos directamente desde vs code... estos se marcaran como untrack: para git basicamente se borra el anterior y se crea un archivo con el nombre renombrado**
+
+-   git status: mostrara Delete archivo.md (por el archivo antiguo) y Untrack archivoRenamed.md (el que has renombrado)...
+
+**2. (salvacion) para que git se lo tome como un rename:**
+
+-   `git add .` > `git status` > `commit`: Cuando veas la R de rename, sabras que git entiende que se ha hecho un rename por lo que todos los cambios o historial de cambios del archivo renombrado se pasará al otro.
+    <!-- recuerda que para regresar a aquel commit que no aparece en el log... usa reflogs y luego has un git reset --hard hashdelcommit -->
+
+**a. borrando archivos desde vscode**
+borras el archivo (checa git status) y luego lo añades al stage:
+
+-   `git add .` > `git status` > `commit`:
+
+## Ignorando archivos que no deseamos
+
+cuando creas archivos o carpetas se marcan como untracked... o ?? en el caso del status --short. eso indica que no les estas dando seguimiento
+
+hay carpetas o archivos a los que no quieres darle seguimiento. eso lo haces con .gitignore
+
+-   creas en tu raiz el archivo .gitignore y dentro colocas las rutas a los que no quieres que le de seguimiento. estos ya no aparecerán como untracked o ?? en tu git status
+-   **tu .gitignore se marca como untracked por lo que debes agregarlo al stage y luego darle a commit**

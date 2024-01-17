@@ -1,0 +1,5 @@
+# ignora las carpetas mencionadas y sus contenidos
+dist/
+node_modules/
+# ignora TODOS los archivos .log (de todas las carpetas y subcarpetas)
+*.log

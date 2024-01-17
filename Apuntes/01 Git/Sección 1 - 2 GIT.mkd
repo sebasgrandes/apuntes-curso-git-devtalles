@@ -1,0 +1,221 @@
+# Sección 1: Inicio del curso
+
+despues de terminar el curso puedes ver la documentación
+el libro proGit es realmente bueno
+instalaciones necesarias: https://gist.github.com/Klerith/90a612344dc2d4e4455ea810fdacbe69
+
+# Sección 2: Git-Fundamentos
+
+## ¿Por qué nos interesa saber Git o un sistema de control de versiones?
+
+Proyectos = Repositorios
+
+Repositorio Central: existe un repositorio unico al que todos envian info
+Repositorio distribuido: todos tienen una copia del repositorio
+
+Commit = Screenshot de mi codigo
+
+Git funciona como una linea de tiempo de commits, donde puedes volver a trás
+Git es una mejor forma de solo hacer copias multiples manuales de tus archivos...
+
+## Primeros comandos de Git
+
+"--": palabra completa (--version -> version de git)
+"-": palabra abreviada (-v -> version de git)
+
+### **Comandos**
+
+`git -version`
+`git -help`: ayuda
+
+`git help commit`: ayuda sobre el comando commit. puedes buscarlo en la web tu mismo pero al usar este comando no se necesita acceso a internet
+
+-   flechas arriba abajo: mueve de arriba a abajo (o vuelve a seleccionar el comando anterior)
+-   flechas derecha izquierda: pasa o retrocede de pagina
+-   dos puntos (:): la página continua
+-   Q (cuando se muestra el help commit por ejemplo y los dos puntos): sale de la pantalla y vuelve a la terminal de comandos
+
+Autenticandome:
+
+-   no hay necesidad de que este registrado en algun lado, esto solo es para que LOCALMENTE se vea que tu hiciste los cambios. esto es por usuario de windows
+    `git config --global user.name "Sebastian Grandes"`
+    `git config --global user.email "s@gmail.com"`
+-   ya cuando quieras subir a github o similares sí debes ingresar unas credenciales correctas. por lo que, generalmente se recomienda que eso de arriba haga match con las credenciales de github o similares.
+
+`git config --global -e`: lista todo lo que acabamos de hacer
+
+-   en mi caso me abre todo en el editor de codigo de vscode
+<!--
+Pero si se abre o despliega en la terminal:
+-   Si quieres añadir o editar algo, pulsas la tecla `A` y haras los cambios.
+-   (en la terminal) Para salir: `Esc` -> `:wq!`: write, quite, hazlo inmediatamente.
+    -->
+
+## Nuestro primero repositorio
+
+haremos que la carpeta 01-bases sea nuestro 1er repositorio
+
+-   abrimos la terminal: **se aconseja el powershell o gitbash**. cambiamos el directorio a nuestra carpeta 01-bases
+
+iniciando el repositorio
+
+-   `git init`: inicia el repositorio de git
+    <!-- en el curso apareció la recomendacion de modificar el nombre de la rama inicial de "master" a "main"... y eso se hacia de manera global y por defecto para las siguientes init con el siguiente comando: `git config --global init.defaultBranch <name>`. en vez de <name> colocas main o el nombre que quieras darle a la rama -->
+    <!-- * con "ctrl + L" limpias la consola -->
+    se creará la carpeta oculta .git: nunca debes modificar (a menos que sepas lo que haces), tocar o borrar esa carpeta porque si lo borras borrarás tu repositorio o por ejemplo no podras hacer una vuelta atrás en la linea de tiempo. esta incluye las configuraciones de git.
+-   `git status`: da info sobre los commits, la rama sobre la que nos encontramos, que archivos han sido modificados y que archivos estan listos para el commit.
+    git también mostrara todos los archivos a los que no le estamos haciendo un seguimiento
+
+añadiendo al seguimiento **(al stage)**
+
+-   `git add index.html`: añadiendo un archivo al seguimiento individualmente
+-   `git status`: muestra info del archivo al que le añadimos el seguimiento y que está listo para el committed ("fotografia")... index.html. también muestra los que no están listos para el seguimiento
+-   `git add .`: añade al seguimiento todos los archivos (aquellos archivos que están como U (untracked) se los pasará a A (added))
+<!-- para el problema con el CRLF (no es nada serio) es básicamente una interpretación de un carácter: `git config core.autocrlf true` -->
+-   `git status`
+-   `git reset index.html`: quita ese archivo del seguimiento
+
+haciendo el commit (fotografia): nos permite hacer viajes en el tiempo
+
+-   `git commit -m "Primer commit"`
+<!-- -m: --message -->
+-   `git status`: aparece "nada en el commit, trabajando en un arbol limpio"
+<!-- hacemos un commit cada que realizamos alguna funcionalidad importante que queremos guardar -->
+
+## ¿Qué hace git por nosotros?
+
+Si modificamos nuestro index.html o borras tus carpetas de fonts, js o images... podemos volver a una versión anterior (restaurarlas) de la siguiente manera:
+
+-   `git checkout -- .`: reconstruye el proyecto a como estaba en el ULTIMO commit (**solo los cambios en los archivos que están en estado unstaged (no preparados para commit) se descartan. Los cambios en los archivos que ya están en el área de staging (staged) se mantienen... TAMBIÉN SE MANTIENEN LOS CAMBIOS DE LOS ARCHIVOS UNTRACKED**)
+
+vscode tiene extensiones por defecto que permiten trabajar junto a git, añadiendo por ejemplo al costado de los archivos lo siguiente:
+
+-   M: file modified
+-   U: file untracked
+
+si un archivo está como U, tu comando anterior de git no lo podrá reconstruir porque no le esta dando seguimiento
+
+## Cambiar nombre de la rama Master a Main
+
+-   `git branch`: muestra la rama en la que estamos trabajando. el "\*" se posiciona al costado de aquella rama en la que estamos trabajando
+    <!-- la rama master es aquella que generalmente ira a producción -->
+    siempre se recomienda trabajar con ramas
+
+cambiar el nombre de la rama de "master" a "main" (en mi repositorio actual):
+
+-   `git branch -m master main`
+<!-- branch para decirle que quiero trabajar con las ramas
+-m: para cambiar el nombre de la rama -->
+
+para hacer que a partir de ahora cuando haga un init, la rama principal no se llame "master" sino "main":
+
+-   `git config --global init.defaultBranch main`
+
+verificando el nombre por defecto de las ramas al hacer init:
+
+-   `git config --global -e`: checa datos de usuario y nombre de la rama principal
+    `:q!`: para salir
+
+<!-- eliminar la carpeta .git elimina todo mi repositorio -->
+
+## Demostracion de la creación, puesta en escena y commits
+
+<!-- si estas escribiendo por ejemplo "git add READ..." solo presiona tabulador para el autocompletado a "git add README.mkd" -->
+
+SI MODIFICAS UN ARCHIVO que está siendo trackeado (readme.md) aparecerá la M al costado. PERO tienes que hacer 2 pasos para hacer el commit:
+
+-   1. `git add .`: para **añadir al stage los cambios** nuevos de los archivos (porque si das git status aparecerá que lo modificado no ha sido añadido al stage)
+-   2. `git commit -m "3er commit"`: para hacer el commit de los archivos del stage
+
+PERO para hacer lo anterior en un solo comando haces lo siguiente:
+
+-   `git commit -am "3er commit"`
+<!-- a: add
+m: message -->
+
+mostrando los registros detallados de los commits:
+
+-   `git log`: muestra autor, fecha y nombre del commit
+<!-- si aparece los dos puntos (":") entonces significa que la pagina continua. desplazate con las flechas arriba y abajo. para salir solo presona la "q" -->
+
+## Bonus - VSCode add y commits
+
+si abres el **source control** (en la barra izquierda o en activitus bar) podras ver el **historial de cambios** de tus archivos, donde accedes a funcionalidades de git:
+
+-   abrir archivo (con el boton)
+-   abrir el archivo pero visualizando las lineas añadidas y quitadas (en colores) (con click en el archivo)
+-   descartar cambios (es como resetear ese unico archivo al ultimo commit)
+-   añadir cambios del archivo al stage
+-   bajar archivos del stage
+-   hacer el commit del archivo subido al stage (también puedes colocar un mensaje)
+
+## Diferentes formas de agregar archivos al escenario (stage)
+
+<!-- cd 02-bases -> git init -->
+
+agregando archivos al stage con extensiones similares:
+
+-   `git add *.js`: añade los archivos del **directorio raiz y subdirectorios** de mi repositorio actual
+<!-- en algunos casos o configuraciones, no se añadiran los archivos de los subdirectorios. en mi caso si
+git status para que veas -->
+-   `git add js/*.js`: añade los archivos del **directorio js**
+
+si creamos una carpeta vacia (por ejemplo "uploads" donde colocaremos los datos o subidas de los usuarios)... git lo ignora, **no lo coloca como untracked y ni si quiera lo identifica en el git status**. PERO si agregas cualquier archivo dentro, recien lo colocará como untracked y lo identificará.
+**para ello es util añadir un archivo `.gitkeep` dentro de dicha carpeta vacía... así git recién podrá identificar dicha carpeta**
+
+## Diferentes formas de añadir al stage
+
+añadiendo al stage el archivo .gitkeep de la carpeta uploads
+
+-   `git add uploads/.gitkeep`
+<!-- no  uploads/*.gitkeep porque no existe ningun nombre para dicha extension -->
+
+añadiendo al stage una carpeta y todo su contenido (subdirectorios y archivos) (por ejemplo la de css)
+
+-   `git add css/`
+
+usando vs code
+
+-   una vez realizado en la terminal `git init`... en source control del mismo vscode podemos añadir al stage y realizar commits los archivos... de forma similar a hacerlo mediante la consola.
+
+<!-- sin embargo, hacerlo con la consola es mas poderoso y accedemos a muchas mas cosas -->
+
+## Creando alias para nuestros comandos
+
+comando short (funciona con git status)
+
+-   `git status --short`: muestra el git status pero de manera resumida o simple
+
+comando oneline (funciona con git log)
+
+-   `git log --oneline`: muestra el git status pero de manera resumida o simple
+
+<!-- no se pueden crear alias que ya existan como comandos, por ejemplo git status -->
+
+**aqui creamos y editamos los alias de manera global, lo que significa que podemos ir a cualquier otro repositorio de NUESTRA COMPUTADORA y dichos alias o configuraciones van a funcionar**
+
+creando nuestros alias (para git status)
+
+-   `git config --global alias.s "status"`: también puede ir el status sin comillas creo. si en cambio deseas colocar directo "status --short" sí o sí debes hacerlo entre comillas
+
+editando el alias (para git status)
+
+-   `git config --global -e`: pulsamos la tecla `A` para hacer la modificacion. en la parte de alias (s = status) le añadimos el `--short`.
+    <!-- si no se abrió en el editor: presionamos `Esc` abajo de la terminal y digitamos `:wq!` para escribir y salir -->
+    <!-- si solo queremos salir sin escribir omitimos el `w` -->
+
+añadiendo el alias del profe (para git log): https://gist.github.com/Klerith/0acf18bbece7923bcac55edb71b03c2b
+
+-   `git config --global alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"`: **git lg** -> forma bonita de desplegar el git log
+
+**reemplazo del anterior alias de status**
+
+-   `git config --global alias.s "status -sb"`: **git s** -> similar al git s pero mostrando la rama principal o en la que estamos me parece
+
+<!-- -   `git config --global alias.s "status --short"` (este ya lo agregamos) -->
+
+añadiendo alias de los compañeros:
+
+-   `git config --global alias.alias "config --global --get-regexp alias"`: git alias -> muestra todos los alias
+
+-   `git config --global alias.cm "!git add . && git commit -m"`: git c "helou" -> hace un add . y un commit con dicho mensaje. (añadimos el git porque en este caso es necesario que se interprete como un comando de git dentor del alias)

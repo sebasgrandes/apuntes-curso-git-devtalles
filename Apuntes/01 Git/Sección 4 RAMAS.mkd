@@ -1,0 +1,121 @@
+# Sección 3: Ramas, uniones, conflictos y tags
+
+## Introducción a la sección de ramas
+
+CADA QUE quieras implementar una nueva funcionalidad debes crear una rama, asi evitas trabajar en la principal. esta rama es una copia exacta de la principal.
+
+## Introducción Ramas, uniones y conflictos
+
+rama principal (master): es una linea de tiempo de commits
+una nueva rama es una nueva linea de tiempo
+
+**(de preferencia corrige los errores en el merge editor, ahi puedes ver detalladamente los cambios que vienen y los cambios actuales, asi como el archivo original sin ningun cambio)** (aquellos archivos que no dan conflictos simplemente se hacern un automerge)
+
+**tipos de merge - uniones:**
+
+<!-- ! estos tipos no los eliges tu, los elige o decide automaticamente git en base a los cambios realizados en tus archivos -->
+
+-   fast-forward: se dispara cuando git detecta que no hay un cambio en la rama principal. y los cambios de la nueva rama (secundaria) puede ser reintegrados de forma transparente, donde cada uno de los commits formara parte de la rama principal como si nunca se hubieran separado.
+-   uniones automaticas: cuando en la rama principal hubo algun cambio que la nueva rama (secundaria) desconoce...pero cuando intentamos hacer el merge git detecta que no se modificaron, las lineas estan iguales, no hay conflictos... por lo que se puede unir de forma automatica, marcando que en dicho momento ambas ramas se unieron
+-   uniones con conflictos: cuando en la nueva rama hice cambios que también afectan las mismas lineas y archivos de la rama principal. aqui git entra en modo conflicto en donde nos pedira que lo resolvamos de forma manual. cuando resolvemos el conflictose crea un nuevo commit de union (merge commit), en donde se unen ambas ramas y donde podemos seguir trabajando
+
+## Merge: Fast-Forward
+
+creando una nueva rama:
+
+-   `git branch rama-villanos`: crea la rama llamada "rama-villanos"
+-   `git branch`: muestra las ramas, y la rama en la que estás
+-   `git checkout rama-villanos`: me muevo hacia la rama-villanos
+<!-- git lg: el HEAD está apuntando hacia -> rama-villanos y master (la principal)... es decir, ambas ramas estan paradas justo en el mismo punto de la linea de tiempo -->
+
+ya que estás en la rama-villanos... añade algunos textos y haz un commit. verás que la rama-villanos avanza mientras que la rama master se va quedando por detras, justo en donde lo dejaste
+
+moviendonos a la rama master:
+
+-   `git checkout master`: muestra la rama principal y los archivos de esta rama
+-   `git checkout rama-villanos`: muestra la rama-villanos y los archivos de esta rama
+
+**uniendo las ramas con fast-forward**
+
+<!-- ! creo que esto se aplica cuando hay cambios solo en la nueva rama pero NO hay cambios (o sea commits pues) en la rama principal. por lo que se unen rapidamente mediante fast-forward -->
+
+-   parate sobre aquella rama a la que se le acoplaran los cambios de la otra rama... en este caso quiero acoplar los cambios de rama-villanos a mi rama master (principal) por lo que hacemos: `git checkout master`
+-   `git merge rama-villanos`: esa rama se unirá a la rama principal.
+-   git te mostrará el tipo de union que se usó. en este caso fue "fast-forward"
+    <!-- git lg mostrará que el HEAD (donde estas parado) apunta hacia tu master y rama-villanos -->
+    <!-- ! el head es aquel lugar en donde estás parado o estás actualmente -->
+
+borrando la rama-villanos:
+
+-   `git branch -d rama-villanos`: borra dicha rama. **si hubiera algunos cambios que no han sido acoplados, git te los mostrará**
+-   `git branch -d rama-villanos f`: fuerza el borrado de dicha rama. **aún así git detecte que hay algunos cambios que no han sido acoplados**
+
+## Merge: Unión automática
+
+<!-- ! creo que esto se aplica cuando hay cambios en varias ramas pero en estos cambios no existen conflictos, por lo que se unen automaticamente creando un nuevo commit -->
+
+**crear una rama y moverme a ella automaticamente**
+
+-   `git checkout -b rama-villanos`
+
+si añades cambios a un archivo de la rama-villanos. y luego te mueves a la rama principal y ahi haces cambios en otro archivo. y luego quieres hacer un merge, lo haces normalmente... parandote en la rama principal y haces: `git merge rama-villanos`
+
+saldrá: _merge made by the "ort" strategy_ lo cual es la estrategia por defecto de git. y ya se habra hecho la union
+
+**ES INTERESANTE VER LOS GIT LOG PARA VER COMO SE UNEN Y AVANZAN LAS RAMAS: usando tu shortcut se ve mejor**
+
+<!-- puedes leer mas sobre ello en:
+https://github.blog/changelog/2022-09-12-merge-commits-now-created-using-the-merge-ort-strategy/
+https://git-scm.com/docs/merge-strategies#Documentation/merge-strategies.txt-ort -->
+
+<!-- esto ya no aplica en versiones nuevas de git: _PERO tendras que colocarle un nombre al nuevo commit que se creará producto de la union de los cambios_ -->
+
+## Merge: Uniones con conflictos
+
+se puede producir cuando 2 personas en 2 ramas diferentes respectivamente modifican la misma linea de un archivo
+
+haces el merge acoplando la rama secundaria a la principal y...
+
+-   aparecera el conflicto. **TIENES QUE ABRIR EL ARCHIVO DE CONFLICTO en vs code** en una ventana en la vas a poder editar libremente... **ademas podras abrirlo en el merge editor para una mejor vision**. PERO luego de modificar debes seleccionar uno solo de los cambios... usando los botones o borrando manualmente una opcion.
+-   **una vez que edites tus cambios o aceptes o los combines (decidir que dejas o aceptas o cambias o borras de tu codigo), aparecerá un UU de unmerged branches. asi que debes añadirlo al staged y luego darle crear un commit**
+
+## Tags - Etiquetas
+
+los tags o etiquetas **son referencias a un commit especifico** (y a todo el estado de el proyecto en ese punto especifico). se usan por ejemplo para marcar versiones o releases de nuestras aplicaciones (v 1.0.0)
+
+## Creando etiquetas - Tags
+
+<!-- vamos a trabajar con powershell, solo para demostrar que se puede. puedes hacerlo en vs code o cualquier terminal -->
+
+creando un tag en el **HEAD en el que te encuentras** (en el punto en el que te encuentras):
+
+-   `git tag super-release`: crea un tag llamado "super-release"
+<!-- podemos usar los tags para movernos en el tiempo, hacer un checkout, etc -->
+
+borrando un tag:
+
+-   `git tag -d super-release`
+
+**creando un tag anotado**:
+
+-   `git tag -a v1.0.0 -m "Versión 1.0.0 lista"`
+<!-- ! el "-a" es de anotado, crea una etiqueta anotada en lugar de una ligera
+Una etiqueta anotada incluye información adicional, como el nombre del autor, la fecha y un mensaje descriptivo (metadatos), se almacenan como objetos completos en la db de git, por lo que se pueden transferrir a respositorios remotos. ademas su uso se extiende y recomienda a versiones de lanzamiento que aporte a documentacion, etc.  -->
+
+mostrando el tag:
+
+-   `git tag`: despliega todos los tags que tienes
+    <!-- ! explicacion del v1.0.0
+    v: version
+    1: version mayor, que signfica que hubo cambios importante so breaking changes
+    0: cuando añadimos cierta funcionalidad a la aplicacion, pero no es considerado una version mayor
+    0: cuando encontramos un bug que tenia que ser resuelto -->
+
+**creando un tag en un commit segun su HASH** (en el punto en el que te encuentras):
+
+-   `git tag -a v0.1.0  -m "Versión 0.1.0 lista" HASH`: crea un tag llamado "super-release"
+<!-- cualquier referencia a un hash puedes colocarla, incluso un HEAD^ -->
+
+mostrando mas informacion sobre un tag especifico
+
+-   `git show v0.1.0`
