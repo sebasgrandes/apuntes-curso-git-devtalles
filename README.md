@@ -9,4 +9,4 @@ El curso lo puedes encontrar desde su plataforma oficial: https://cursos.devtall
 
 ¡Gracias!
 
-![image](https://github.com/sebasgrandes/apuntes-git-devtalles/assets/105091502/a9f05295-1bbf-422d-89db-a571ecfc0fe2)
+![image](https://github.com/sebasgrandes/apuntes-git-devtalles/assets/105091502/ab649e37-1afa-4e82-ac38-4ed2799ee7aa)
