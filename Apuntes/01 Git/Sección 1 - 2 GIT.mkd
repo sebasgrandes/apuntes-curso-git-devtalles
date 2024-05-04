@@ -25,7 +25,7 @@ Git es una mejor forma de solo hacer copias multiples manuales de tus archivos..
 
 ### **Comandos**
 
-`git -version`
+`git --version`
 `git -help`: ayuda
 
 `git help commit`: ayuda sobre el comando commit. puedes buscarlo en la web tu mismo pero al usar este comando no se necesita acceso a internet
